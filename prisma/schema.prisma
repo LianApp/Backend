@@ -1,0 +1,106 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model Organization {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  type  String
+  users User[]
+}
+
+model User {
+  id              Int          @id @default(autoincrement())
+  name            String
+  role            Role
+  email           String       @unique
+  password        String
+  organization_id Int
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  group_id        Int?
+  group           Group?       @relation(fields: [group_id], references: [id])
+  subjects        Subject[]
+}
+
+model Group {
+  id       Int      @id @default(autoincrement())
+  name     String
+  courses  Course[]
+  students User[]
+}
+
+model Course {
+  id         Int      @id @default(autoincrement())
+  title      String
+  groups     Group[]
+  subject_id Int
+  lessons    Lesson[]
+}
+
+model Subject {
+  id       Int    @id @default(autoincrement())
+  name     String
+  teachers User[]
+}
+
+model Lesson {
+  id               Int    @id @default(autoincrement())
+  course_id        Int
+  course           Course @relation(fields: [course_id], references: [id])
+  title            String
+  presentation_url String
+  lecture_url      String
+  test             Test?
+}
+
+model Test {
+  id        Int        @id @default(autoincrement())
+  lesson_id Int        @unique
+  lesson    Lesson     @relation(fields: [lesson_id], references: [id])
+  questions Question[]
+  sessions TestSession[]
+}
+
+model TestSession {
+    id Int @id @default(autoincrement())
+    test_id Int
+    test Test @relation(fields: [test_id], references: [id])
+}
+
+model Question {
+  id      Int          @id @default(autoincrement())
+  test_id Int
+  test    Test         @relation(fields: [test_id], references: [id])
+  text    String
+  type    QuestionType
+  answers Answer[]
+}
+
+model Answer {
+  id          Int      @id @default(autoincrement())
+  question_id Int
+  question    Question @relation(fields: [question_id], references: [id])
+  text        String
+  correct     Boolean
+}
+
+
+enum Role {
+  ADMIN
+  STUDENT
+  TEACHER
+}
+
+enum QuestionType {
+  SINGLE
+  MULTI
+}

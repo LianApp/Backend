@@ -1,0 +1,110 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Organization {
+  id Int [pk, increment]
+  name String [unique, not null]
+  type String [not null]
+  users User [not null]
+}
+
+Table User {
+  id Int [pk, increment]
+  name String [not null]
+  role Role [not null]
+  email String [unique, not null]
+  password String [not null]
+  organization_id Int [not null]
+  organization Organization [not null]
+  group_id Int
+  group Group
+  subjects Subject [not null]
+}
+
+Table Group {
+  id Int [pk, increment]
+  name String [not null]
+  courses Course [not null]
+  students User [not null]
+}
+
+Table Course {
+  id Int [pk, increment]
+  title String [not null]
+  groups Group [not null]
+  subject_id Int [not null]
+  lessons Lesson [not null]
+}
+
+Table Subject {
+  id Int [pk, increment]
+  name String [not null]
+  teachers User [not null]
+}
+
+Table Lesson {
+  id Int [pk, increment]
+  course_id Int [not null]
+  course Course [not null]
+  title String [not null]
+  presentation_url String [not null]
+  lecture_url String [not null]
+  test Test
+}
+
+Table Test {
+  id Int [pk, increment]
+  lesson_id Int [unique, not null]
+  lesson Lesson [not null]
+  questions Question [not null]
+  sessions TestSession [not null]
+}
+
+Table TestSession {
+  id Int [pk, increment]
+  test_id Int [not null]
+  test Test [not null]
+}
+
+Table Question {
+  id Int [pk, increment]
+  test_id Int [not null]
+  test Test [not null]
+  text String [not null]
+  type QuestionType [not null]
+  answers Answer [not null]
+}
+
+Table Answer {
+  id Int [pk, increment]
+  question_id Int [not null]
+  question Question [not null]
+  text String [not null]
+  correct Boolean [not null]
+}
+
+Enum Role {
+  ADMIN
+  STUDENT
+  TEACHER
+}
+
+Enum QuestionType {
+  SINGLE
+  MULTI
+}
+
+Ref: User.organization_id > Organization.id
+
+Ref: User.group_id > Group.id
+
+Ref: Lesson.course_id > Course.id
+
+Ref: Test.lesson_id - Lesson.id
+
+Ref: TestSession.test_id > Test.id
+
+Ref: Question.test_id > Test.id
+
+Ref: Answer.question_id > Question.id
