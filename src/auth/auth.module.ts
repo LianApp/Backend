@@ -9,6 +9,7 @@ import { SecurityConfig } from 'src/common/configs/config.interface';
 import { JwtAuthGuard } from './auth.guard';
 import { AuthController } from './auth.controller';
 
+
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
