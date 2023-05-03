@@ -18,5 +18,6 @@ export class TeachersController {
   async getCourses(@UserEntity() user: User) {
     return await this.teachersService.getCourses(user);
   }
+
   
 }
