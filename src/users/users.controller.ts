@@ -1,11 +1,12 @@
 import { Get, Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { AddStudentDto, AddStudentsDto } from './dto/add-students.dto';
+import { CourseModel } from './models/course.model';
 import { UsersService } from './users.service';
 
 @Controller()
@@ -36,6 +37,7 @@ export class UsersController {
   @ApiTags('students')
   @Roles('STUDENT')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiOkResponse({type: [CourseModel]})
   async getCourses(@UserEntity() user: User) {
     return await this.userService.getCourses(user);
   }
