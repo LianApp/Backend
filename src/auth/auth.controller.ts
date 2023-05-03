@@ -19,7 +19,7 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get("/me")
     async getme(@UserEntity() user: User) {
-        const {name, email, role} = user;
-        return {name, email, role}
+        const {password, ...rest} = user;
+        return rest;
     }
 }

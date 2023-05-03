@@ -16,6 +16,7 @@ import { GroupsModule } from './groups/groups.module';
 import { CoursesModule } from './courses/courses.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { TeachersModule } from './teachers/teachers.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { LessonsModule } from './lessons/lessons.module';
     CoursesModule,
     SubjectsModule,
     LessonsModule,
+    TeachersModule,
   ],
   exports: [MailerModule],
   controllers: [AppController],

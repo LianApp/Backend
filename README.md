@@ -8,9 +8,5 @@ $ npm run start:dev
 
 ## Run docker container
 ```shell
-$ sh run.sh
-```
-Or
-```shell
-$ npm run docker
+$ docker-compose up
 ```
