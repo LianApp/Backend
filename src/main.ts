@@ -9,6 +9,8 @@ import type {
   NestConfig,
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
+import { resolve } from 'node:path';
+import { writeFileSync } from 'node:fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -39,6 +41,9 @@ async function bootstrap() {
     
     const document = SwaggerModule.createDocument(app, options);
 
+    const outputPath = resolve(process.cwd(), 'swagger.json');
+    writeFileSync(outputPath, JSON.stringify(document), { encoding: 'utf8'});
+    
     SwaggerModule.setup(swaggerConfig.path || 'api', app, document);
   }
 
