@@ -1,5 +1,5 @@
 import { Get, Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -10,6 +10,8 @@ import { CourseModel } from './models/course.model';
 import { UsersService } from './users.service';
 
 @Controller()
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class UsersController {
 
   constructor(private readonly userService: UsersService) {}
@@ -20,7 +22,7 @@ export class UsersController {
     type: AddStudentsDto,
   })
   @ApiTags('/api/students')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   async addUsers(@UserEntity() user: User, @Body('data') body: AddStudentDto[]) {
     await this.userService.addStudents(user, body)
   }
@@ -28,7 +30,7 @@ export class UsersController {
   @Delete('/api/students/:id')
   @Roles('ADMIN')
   @ApiTags('students')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   async removeStudent(@UserEntity() user: User, @Param('id') studentId: number) {
     await this.userService.removeStudent(user, studentId)
   }
@@ -36,7 +38,7 @@ export class UsersController {
   @Get('/api/student/courses')
   @ApiTags('students')
   @Roles('STUDENT')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @ApiOkResponse({type: [CourseModel]})
   async getCourses(@UserEntity() user: User) {
     return await this.userService.getCourses(user);
