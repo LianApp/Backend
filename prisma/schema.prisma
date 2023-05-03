@@ -13,7 +13,7 @@ generator dbml {
 
 model Organization {
   id    Int    @id @default(autoincrement())
-  name  String @unique
+  name  String 
   type  String
   users User[]
 }

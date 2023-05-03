@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
+import { Get, Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
@@ -31,6 +31,15 @@ export class UsersController {
   async removeStudent(@UserEntity() user: User, @Param('id') studentId: number) {
     await this.userService.removeStudent(user, studentId)
   }
+
+  @Get('/student/courses')
+  @ApiTags('students')
+  @Roles('STUDENT')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getCourses(@UserEntity() user: User) {
+    return await this.userService.getCourses(user);
+  }
+  
   
   
 }

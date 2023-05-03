@@ -97,4 +97,13 @@ export class UsersService {
     });
     
   }
+
+  async getCourses(user: User) {
+    const group_id = user.group_id;
+    return await this.prisma.group.findUnique({
+      where: {
+        id: group_id
+      },
+    }).courses({include: {lessons: true}})
+  }
 }

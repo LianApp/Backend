@@ -4,7 +4,7 @@
 
 Table Organization {
   id Int [pk, increment]
-  name String [unique, not null]
+  name String [not null]
   type String [not null]
   users User [not null]
 }

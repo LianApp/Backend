@@ -13,14 +13,9 @@ async function main() {
       email: "teacher@edu.fa.ru",
       password: "$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm",
       organization: {
-        connectOrCreate: {
-          create: {
+        create: {
             name: "KIP",
             type: "College"
-          },
-          where: {
-            name: "KIP"
-          }
         }
       },
     }
@@ -31,14 +26,13 @@ async function main() {
       name: "Математика"
     }
   })
-  
-  const course = await prisma.course.create({
+
+  const group = await prisma.group.create({
     data: {
-      title: "Алгебра",
-      teacher_id: user2.id,
-      subject_id: subject.id
+      name: "ИСИП-319"
     }
   })
+  
 
   const user1 = await prisma.user.create({
     data: {
@@ -52,14 +46,23 @@ async function main() {
           type: "College"
         }
       },
-      group: {
-        create: {
-          name: "4ИСИП-319",
-        }
-      }
+      group: { 
+        connect: {
+          id: group.id
+      }}
     }
   });
 
+
+  const course = await prisma.course.create({
+    data: {
+      title: "Алгебра",
+      teacher_id: user2.id,
+      subject_id: subject.id,
+      groups: { connect: [{id: group.id}] }
+    }
+  });
+  
   const lesson = await prisma.lesson.create({
     data: {
       title: "Сложение",
