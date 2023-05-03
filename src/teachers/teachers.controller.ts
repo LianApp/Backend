@@ -10,7 +10,7 @@ import { User } from '@prisma/client';
 export class TeachersController {
   constructor(private readonly teachersService: TeachersService) {}
 
-  @Get('')
+  @Get('/courses')
   @Roles('TEACHER')
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getCourses(@UserEntity() user: User) {
