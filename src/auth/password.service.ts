@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { hash, compare } from 'bcrypt';
 import { SecurityConfig } from 'src/common/configs/config.interface';
+import { generate } from 'generate-password';
 
 @Injectable()
 export class PasswordService {
@@ -23,4 +24,12 @@ export class PasswordService {
   hashPassword(password: string): Promise<string> {
     return hash(password, this.bcryptSaltRounds);
   }
+
+  generatePassword(): string {
+    return generate({
+      length: 10,
+      numbers: true
+    });
+  }
+  
 }

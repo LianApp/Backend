@@ -35,6 +35,7 @@ Table Course {
   groups Group [not null]
   subject_id Int [not null]
   lessons Lesson [not null]
+  teacher_id Int [not null]
 }
 
 Table Subject {
@@ -86,6 +87,7 @@ Table Answer {
 
 Enum Role {
   ADMIN
+  ORGANIZATOR
   STUDENT
   TEACHER
 }

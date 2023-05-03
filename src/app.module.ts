@@ -7,15 +7,34 @@ import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
 import config from 'src/common/configs/config';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { BullModule } from '@nestjs/bull';
+import { MailerModule } from '@nestjs-modules/mailer'
+import { EmailConsumer } from './email.processor';
+import { TestsModule } from './tests/tests.module';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { GroupsModule } from './groups/groups.module';
+import { CoursesModule } from './courses/courses.module';
+import { SubjectsModule } from './subjects/subjects.module';
+import { LessonsModule } from './lessons/lessons.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+    MailerModule.forRoot({
+      transport: {
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env["EMAIL_USER"],
+          pass: process.env["EMAIL_PASS"]
+        }
+      }
+    }),
     PrismaModule.forRoot({
       isGlobal: true,
       prismaServiceOptions: {
         middlewares: [
-          // configure your prisma middleware
           loggingMiddleware({
             logger: new Logger('PrismaMiddleware'),
             logLevel: 'log',
@@ -23,12 +42,24 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
         ],
       },
     }),
-    
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT)
+      }
+    }),
     AuthModule,
     UsersModule,
-    PrometheusModule.register()
+    PrometheusModule.register(),
+    TestsModule,
+    OrganizationsModule,
+    GroupsModule,
+    CoursesModule,
+    SubjectsModule,
+    LessonsModule,
   ],
+  exports: [MailerModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EmailConsumer],
 })
-export class AppModule {}
+export class AppModule { }

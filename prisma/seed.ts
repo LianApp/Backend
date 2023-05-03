@@ -30,8 +30,14 @@ async function main() {
       email: "teacher@edu.fa.ru",
       password: "$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm",
       organization: {
-        connect: {
-          name: "KIP"
+        connectOrCreate: {
+          create: {
+            name: "KIP",
+            type: "College"
+          },
+          where: {
+            name: "KIP"
+          }
         }
       },
     }

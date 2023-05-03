@@ -44,6 +44,7 @@ model Course {
   groups     Group[]
   subject_id Int
   lessons    Lesson[]
+  teacher_id Int 
 }
 
 model Subject {
@@ -96,6 +97,7 @@ model Answer {
 
 enum Role {
   ADMIN
+  ORGANIZATOR
   STUDENT
   TEACHER
 }

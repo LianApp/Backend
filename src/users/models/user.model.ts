@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import { BaseModel } from 'src/common/models/base.model';
 import { Role } from '@prisma/client';
 import { ApiHideProperty } from '@nestjs/swagger';
@@ -9,12 +9,16 @@ export class User extends BaseModel {
   @IsEmail()
   email: string;
 
-  firstname?: string;
+  @IsNotEmpty()
+  name: string;
 
-  lastname?: string;
-
-  role: Role;
+  @IsNotEmpty()
+  role: Role = "STUDENT";
 
   @ApiHideProperty()
   password: string;
+
+  organizationId: number;
+
+  groupId: number;
 }

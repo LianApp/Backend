@@ -1,4 +1,6 @@
-FROM node:16 AS builder
+FROM node:17 AS builder
+
+RUN echo $DATABASE_URL
 
 # Create app directory
 WORKDIR /app
@@ -14,13 +16,14 @@ COPY . .
 
 RUN npm run build
 
-FROM node:16
+FROM node:17
 
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
+COPY prisma ./prisma
 
 EXPOSE 3000
 CMD [ "npm", "run", "start:prod" ]
