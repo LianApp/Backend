@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiTags, OmitType } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags, OmitType } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { JwtAuthGuard } from './auth.guard';
@@ -22,6 +22,7 @@ export class AuthController {
 
     @UseGuards(JwtAuthGuard)
     @Get("api/me")
+    @ApiBearerAuth()
     @ApiOkResponse({type: OmitType(UserModel, ['password'])})
     async getme(@UserEntity() user: User) {
         const {password, ...rest} = user;
