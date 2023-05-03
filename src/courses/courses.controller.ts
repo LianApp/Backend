@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -9,6 +10,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 
 @Controller('courses')
 @UseGuards(JwtAuthGuard)
+@ApiTags('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 

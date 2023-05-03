@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { JwtAuthGuard } from './auth.guard';
@@ -7,6 +8,7 @@ import { LoginDto } from './dto/login.dto';
 import { Token } from './models/token.model';
 
 @Controller()
+@ApiTags('auth')
 export class AuthController {
     constructor(private readonly auth: AuthService) {}
 
