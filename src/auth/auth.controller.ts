@@ -5,6 +5,7 @@ import { UserEntity } from 'src/common/decorators/user.decorator';
 import { JwtAuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.input';
 import { Token } from './models/token.model';
 import { UserModel } from './models/user.model';
 
@@ -27,5 +28,11 @@ export class AuthController {
     async getme(@UserEntity() user: User) {
         const {password, ...rest} = user;
         return rest;
+    }
+
+    @Post('/api/refresh')
+    @ApiOkResponse({type: Token})
+    async refresh(@Body() refreshToken: RefreshTokenDto) {
+      return this.auth.refreshToken(refreshToken.refreshToken)
     }
 }
