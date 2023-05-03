@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ApiTags } from '@nestjs/swagger';
 import { LessonsService } from './lessons.service';
 
-@Controller('lessons')
+@Controller('/api/lessons')
 @ApiTags('lessons')
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}

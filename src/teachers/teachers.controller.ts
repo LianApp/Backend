@@ -7,7 +7,7 @@ import { RolesGuard } from 'src/common/guards/role.guard';
 import { User } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
 
-@Controller('teachers')
+@Controller('/api/teachers')
 @ApiTags('teachers')
 export class TeachersController {
   constructor(private readonly teachersService: TeachersService) {}

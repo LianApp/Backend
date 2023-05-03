@@ -13,7 +13,7 @@ import { UserModel } from './models/user.model';
 export class AuthController {
     constructor(private readonly auth: AuthService) {}
 
-    @Post("/login")
+    @Post("api/login")
     @ApiBody({type: LoginDto})
     async login(@Body() { email, password }: LoginDto): Promise<Token> {
         const token = await this.auth.login(email, password);
@@ -21,7 +21,7 @@ export class AuthController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get("/me")
+    @Get("api/me")
     @ApiOkResponse({type: OmitType(UserModel, ['password'])})
     async getme(@UserEntity() user: User) {
         const {password, ...rest} = user;

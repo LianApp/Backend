@@ -14,18 +14,18 @@ export class UsersController {
 
   constructor(private readonly userService: UsersService) {}
 
-  @Post('/students/add')
+  @Post('/api/students/add')
   @Roles('ADMIN')
   @ApiBody({
     type: AddStudentsDto,
   })
-  @ApiTags('students')
+  @ApiTags('/api/students')
   @UseGuards(JwtAuthGuard, RolesGuard)
   async addUsers(@UserEntity() user: User, @Body('data') body: AddStudentDto[]) {
     await this.userService.addStudents(user, body)
   }
 
-  @Delete('/students/:id')
+  @Delete('/api/students/:id')
   @Roles('ADMIN')
   @ApiTags('students')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -33,7 +33,7 @@ export class UsersController {
     await this.userService.removeStudent(user, studentId)
   }
 
-  @Get('/student/courses')
+  @Get('/api/student/courses')
   @ApiTags('students')
   @Roles('STUDENT')
   @UseGuards(JwtAuthGuard, RolesGuard)

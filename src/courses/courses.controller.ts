@@ -8,7 +8,7 @@ import { RolesGuard } from 'src/common/guards/role.guard';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 
-@Controller('courses')
+@Controller('/api/courses')
 @UseGuards(JwtAuthGuard)
 @ApiTags('courses')
 export class CoursesController {
