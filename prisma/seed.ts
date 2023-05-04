@@ -30,7 +30,8 @@ async function main() {
 
   const group = await prisma.group.create({
     data: {
-      name: "ИСИП-319"
+      name: "ИСИП-319",
+      organization_id: user2.organization_id
     }
   })
   

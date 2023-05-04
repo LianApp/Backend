@@ -1,13 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { User } from '@prisma/client';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { Group } from './entities/group.entity';
+import { User as UserModel } from 'src/users/models/user.model';
 
 @Controller('/api/groups')
 @ApiTags('groups')
@@ -19,6 +21,7 @@ export class GroupsController {
   @Get()
   @Roles('TEACHER', 'ORGANIZATOR')
   @UseGuards(RolesGuard)
+  @ApiOkResponse({ type: Group, isArray: true })
   async getAll(@UserEntity() user: User) {
     return await this.groupsService.findAll(user.organization_id);
   }
@@ -26,6 +29,7 @@ export class GroupsController {
   @Get(':id/students')
   @Roles('TEACHER', 'ORGANIZATOR')
   @UseGuards(RolesGuard)
+  @ApiOkResponse({ type: UserModel, isArray: true })
   async getStudents(@Param('id') groupId: number) {
     return await this.groupsService.getStudents(groupId);
   }

@@ -25,7 +25,7 @@ export class GroupsService {
   }
 
   async getStudents(id: number) {
-    return await this.prisma.group.findUnique({ where: { id: id } }).students()
+    return await this.prisma.group.findUnique({ where: { id: id } }).students({ select: { password: false }})
   }
 
   async update(user: User, id: number, updateGroupDto: UpdateGroupDto) {

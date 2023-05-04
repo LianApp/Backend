@@ -1,13 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class Group {
+export class Subject {
   @ApiProperty()
-  id: number
-  
+  id: number;
   @ApiProperty()
   name: string;
-  
   @ApiProperty()
   organization_id: number;
-  
 }
