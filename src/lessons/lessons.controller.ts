@@ -77,7 +77,7 @@ export class LessonsController {
     }
     
     if (!createLessonDto.title) {
-      throw new BadRequestException('You should provide course_id and title');
+      throw new BadRequestException('You should provide and title');
     }
     
     const { lecture, presentation } = files;
