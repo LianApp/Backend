@@ -39,6 +39,9 @@ export class GroupsService {
 
   async update(user: User, id: number, updateGroupDto: UpdateGroupDto) {
     const group = await this.prisma.group.findUnique({ where: { id: id } });
+    if (group === null) {
+      throw new NotFoundException("Can't find group with given id");
+    }
     if (group.organization_id !== user.organization_id) {
       throw new UnauthorizedException();
     }
@@ -50,6 +53,9 @@ export class GroupsService {
 
   async remove(user: User, id: number) {
     const group = await this.prisma.group.findUnique({ where: { id: id } });
+    if (group === null) {
+      throw new NotFoundException("Can't find group with given id");
+    }
     if (group.organization_id !== user.organization_id) {
       throw new UnauthorizedException();
     }
