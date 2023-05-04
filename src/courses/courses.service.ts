@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Course, Lesson, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -9,13 +9,21 @@ export class CoursesService {
   constructor(private readonly prisma: PrismaService) { }
   
   async create(user: User, createCourseDto: CreateCourseDto) {
-    await this.prisma.course.create({
+    return await this.prisma.course.create({
       data: {
         title: createCourseDto.title,
         subject_id: createCourseDto.subjectId,
         teacher_id: user.id,
       }
     })
+  }
+
+  async getGroups(user: User, courseId: number) {
+    const course = await this.prisma.course.findUnique({ where: { id : courseId }, include: { groups: true }});
+    if (course.teacher_id !== user.id) {
+      throw new UnauthorizedException();
+    }
+    return course.groups;
   }
 
   async findTeacherCourses(user: User) {

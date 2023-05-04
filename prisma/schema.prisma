@@ -16,6 +16,8 @@ model Organization {
   name  String 
   type  String
   users User[]
+  subjects Subject[]
+  groups Group[]
 }
 
 model User {
@@ -36,10 +38,13 @@ model Group {
   name     String
   courses  Course[]
   students User[]
+  organization_id Int 
+  organization Organization @relation(fields: [organization_id], references: [id])
 }
 
 model Course {
   id         Int      @id @default(autoincrement())
+  icon       String   @db.VarChar(1) @default("📕")
   title      String
   groups     Group[]
   subject_id Int
@@ -51,6 +56,8 @@ model Subject {
   id       Int    @id @default(autoincrement())
   name     String
   teachers User[]
+  organization_id Int
+  organization Organization @relation(fields: [organization_id], references: [id])
 }
 
 model Lesson {

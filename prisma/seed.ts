@@ -23,7 +23,8 @@ async function main() {
 
   const subject = await prisma.subject.create({
     data: {
-      name: "Математика"
+      name: "Математика",
+      organization_id: user2.organization_id
     }
   })
 

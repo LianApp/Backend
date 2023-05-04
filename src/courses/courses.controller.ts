@@ -38,5 +38,16 @@ export class CoursesController {
   async createCourse(@UserEntity() teacher: User, @Body() createCourseDto: CreateCourseDto) {
     return await this.coursesService.create(teacher, createCourseDto)
   }
+
+  @Get(':id/groups')
+  @Roles('TEACHER')
+  @UseGuards(RolesGuard)
+  async getGroups(
+    @UserEntity() user: User,
+    @Param('id') courseId: number,
+  ) {
+    return await this.coursesService.getGroups(user, courseId)
+  }
+
   
 }

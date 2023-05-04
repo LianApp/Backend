@@ -7,6 +7,8 @@ Table Organization {
   name String [not null]
   type String [not null]
   users User [not null]
+  subjects Subject [not null]
+  groups Group [not null]
 }
 
 Table User {
@@ -27,10 +29,13 @@ Table Group {
   name String [not null]
   courses Course [not null]
   students User [not null]
+  organization_id Int [not null]
+  organization Organization [not null]
 }
 
 Table Course {
   id Int [pk, increment]
+  icon String [not null, default: '📕']
   title String [not null]
   groups Group [not null]
   subject_id Int [not null]
@@ -42,6 +47,8 @@ Table Subject {
   id Int [pk, increment]
   name String [not null]
   teachers User [not null]
+  organization_id Int [not null]
+  organization Organization [not null]
 }
 
 Table Lesson {
@@ -100,6 +107,10 @@ Enum QuestionType {
 Ref: User.organization_id > Organization.id
 
 Ref: User.group_id > Group.id
+
+Ref: Group.organization_id > Organization.id
+
+Ref: Subject.organization_id > Organization.id
 
 Ref: Lesson.course_id > Course.id
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Course, User } from '@prisma/client';
+import { Course, Group, Subject, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
@@ -14,4 +14,11 @@ export class TeachersService {
     });
     return  courses;
   }
+
+  async getSubjects(user: User): Promise<Subject[]> {
+    const subjects = await this.prisma.user.findUnique({ where: { id: user.id } }).subjects()
+    return subjects
+    
+  }
+  
 }
