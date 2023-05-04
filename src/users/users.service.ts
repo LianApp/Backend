@@ -18,7 +18,7 @@ export class UsersService {
   ) { }
 
 
-  async addStudents(user: User, studentList: AddStudentDto[]) {
+  async addStudents(user: User, studentList: AddStudentDto[], role: Role = 'STUDENT') {
     
     const students: CreateUserDto[] = studentList.map(
       student => ({
@@ -32,7 +32,7 @@ export class UsersService {
         email: s.email,
         name: s.name,
         password: await this.passwordService.hashPassword(s.password),
-        role: Role.STUDENT,
+        role: role,
         organization_id: user.organization_id,
         group_id: user.group_id
     })));

@@ -14,6 +14,7 @@ export class CoursesService {
         title: createCourseDto.title,
         subject_id: createCourseDto.subjectId,
         teacher_id: user.id,
+        icon: createCourseDto.icon
       }
     })
   }

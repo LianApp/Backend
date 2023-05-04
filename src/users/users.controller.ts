@@ -16,26 +16,37 @@ export class UsersController {
 
   constructor(private readonly userService: UsersService) {}
 
-  @Post('/api/students/add')
-  @Roles('ADMIN')
+  @Post('/api/students')
+  @Roles('ORGANIZATOR')
   @ApiBody({
     type: AddStudentsDto,
   })
-  @ApiTags('/api/students')
+  @ApiTags('students')
   @UseGuards(RolesGuard)
   async addUsers(@UserEntity() user: User, @Body('data') body: AddStudentDto[]) {
     await this.userService.addStudents(user, body)
   }
+  
+  @Post('/api/teachers')
+  @Roles('ORGANIZATOR')
+  @ApiBody({
+    type: AddStudentsDto,
+  })
+  @ApiTags('teachers')
+  @UseGuards(RolesGuard)
+  async addTeachers(@UserEntity() user: User, @Body('data') body: AddStudentDto[]) {
+    await this.userService.addStudents(user, body, 'TEACHER')
+  }
 
   @Delete('/api/students/:id')
-  @Roles('ADMIN')
+  @Roles('ORGANIZATOR')
   @ApiTags('students')
   @UseGuards(RolesGuard)
   async removeStudent(@UserEntity() user: User, @Param('id', new ParseIntPipe()) studentId: number) {
     await this.userService.removeStudent(user, studentId)
   }
 
-  @Get('/api/student/courses')
+  @Get('/api/students/courses')
   @ApiTags('students')
   @Roles('STUDENT')
   @UseGuards(RolesGuard)

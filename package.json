@@ -64,6 +64,7 @@
     "@nestjs/jwt": "10.0.2",
     "@nestjs/passport": "9.0.3",
     "@nestjs/platform-express": "9.3.10",
+    "@nestjs/serve-static": "^3.0.1",
     "@nestjs/swagger": "6.2.1",
     "@prisma/client": "^4.11.0",
     "@willsoto/nestjs-prometheus": "^5.1.1",

@@ -17,6 +17,8 @@ import { CoursesModule } from './courses/courses.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { TeachersModule } from './teachers/teachers.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [

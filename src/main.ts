@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -9,11 +9,12 @@ import type {
   NestConfig,
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { writeFileSync } from 'node:fs';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Validation
   app.useGlobalPipes(new ValidationPipe());
@@ -24,7 +25,11 @@ async function bootstrap() {
 
   // Prisma Client Exception Filter for unhandled exceptions
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter, {
+    P2000: HttpStatus.BAD_REQUEST,
+    P2002: HttpStatus.CONFLICT,
+    P2025: HttpStatus.NOT_FOUND
+  }));
 
   const configService = app.get(ConfigService);
   const nestConfig = configService.get<NestConfig>('nest');
@@ -52,6 +57,9 @@ async function bootstrap() {
   if (corsConfig.enabled) {
     app.enableCors();
   }
+
+  app.useStaticAssets(join(__dirname, '..', 'files'), { prefix: '/storage/' })
+
 
   await app.listen(process.env.PORT || nestConfig.port || 3000);
 }
