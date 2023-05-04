@@ -55,6 +55,7 @@ export class CoursesService {
     return course.lessons
   }
 
+  
   async findOne(user: User, courseId: number): Promise<Course> {
     const course = await this.prisma.course.findFirst({
       where: {

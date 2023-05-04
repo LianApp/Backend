@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -10,6 +10,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 
 @Controller('/api/courses')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @ApiTags('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
@@ -29,6 +30,13 @@ export class CoursesController {
   @Get(':id')
   async findOne(@Param('id') courseId: number, @UserEntity() user: User) { 
     return await this.coursesService.findOne(user, courseId)
+  }
+
+  @Post()
+  @Roles('TEACHER')
+  @UseGuards(RolesGuard)
+  async createCourse(@UserEntity() teacher: User, @Body() createCourseDto: CreateCourseDto) {
+    return await this.coursesService.create(teacher, createCourseDto)
   }
   
 }
