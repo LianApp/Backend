@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
@@ -33,7 +33,7 @@ export class SubjectsController {
   @Delete(':id')
   @Roles('ORGANIZATOR')
   @UseGuards(RolesGuard)
-  async delete(@UserEntity() user: User, @Param('id') subjectId: number): Promise<Subject> {
+  async delete(@UserEntity() user: User, @Param('id', new ParseIntPipe()) subjectId: number): Promise<Subject> {
     return await this.subjectsService.remove(user, subjectId);
   }
 
