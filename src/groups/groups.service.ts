@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -25,7 +25,16 @@ export class GroupsService {
   }
 
   async getStudents(id: number) {
-    return await this.prisma.group.findUnique({ where: { id: id } }).students({ select: { password: false }})
+    const group = await this.prisma.group.findUnique({ where: { id: id }, include: { students: true } });
+    if (group === null) {
+      throw new NotFoundException("Can't find group with given id");
+    }
+    const students = group.students;
+    
+    return students.map(s => {
+      const {password, ...res} = s;
+      return res
+    })
   }
 
   async update(user: User, id: number, updateGroupDto: UpdateGroupDto) {

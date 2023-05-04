@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
@@ -23,12 +23,12 @@ export class CoursesController {
   }
 
   @Get(':id/lessons')
-  async getLessons(@Param('id') courseId: number, @UserEntity() user: User) {
+  async getLessons(@Param('id', new ParseIntPipe()) courseId: number, @UserEntity() user: User) {
     return await this.coursesService.getCourseLessons(user, courseId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') courseId: number, @UserEntity() user: User) { 
+  async findOne(@Param('id', new ParseIntPipe()) courseId: number, @UserEntity() user: User) { 
     return await this.coursesService.findOne(user, courseId)
   }
 
@@ -44,7 +44,7 @@ export class CoursesController {
   @UseGuards(RolesGuard)
   async getGroups(
     @UserEntity() user: User,
-    @Param('id') courseId: number,
+    @Param('id', new ParseIntPipe()) courseId: number,
   ) {
     return await this.coursesService.getGroups(user, courseId)
   }

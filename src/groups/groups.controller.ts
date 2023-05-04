@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put, ParseIntPipe } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -30,7 +30,7 @@ export class GroupsController {
   @Roles('TEACHER', 'ORGANIZATOR')
   @UseGuards(RolesGuard)
   @ApiOkResponse({ type: UserModel, isArray: true })
-  async getStudents(@Param('id') groupId: number) {
+  async getStudents(@Param('id', new ParseIntPipe()) groupId: number) {
     return await this.groupsService.getStudents(groupId);
   }
   
@@ -39,7 +39,7 @@ export class GroupsController {
   @UseGuards(RolesGuard)
   async updateGroup(
     @UserEntity() user: User,
-    @Param('id') courseId: number,
+    @Param('id', new ParseIntPipe()) courseId: number,
     @Body() updateGroupDto: UpdateGroupDto
   ) {
     return await this.groupsService.update(user, courseId, updateGroupDto);
