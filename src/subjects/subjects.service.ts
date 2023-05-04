@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -39,6 +39,9 @@ export class SubjectsService {
 
   async remove(user: User, id: number) {
     const subject = await this.prisma.subject.findUnique({ where: { id: id } });
+    if (subject === null) {
+      throw new NotFoundException("Can't get subject with given id");
+    }
     if (subject.organization_id !== user.organization_id) {
       throw new UnauthorizedException()
     }

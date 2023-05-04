@@ -20,6 +20,9 @@ export class CoursesService {
 
   async getGroups(user: User, courseId: number) {
     const course = await this.prisma.course.findUnique({ where: { id : courseId }, include: { groups: true }});
+    if (course === null) {
+      throw new NotFoundException("Can't get course with given id");
+    }
     if (course.teacher_id !== user.id) {
       throw new UnauthorizedException();
     }
@@ -44,6 +47,9 @@ export class CoursesService {
         courses: true
       }
     });
+    if (studentGroup === null) {
+      throw new NotFoundException("Can't get group with given id");
+    }
     return studentGroup.courses
   }
 
@@ -57,6 +63,9 @@ export class CoursesService {
         groups: true,
       },
     })
+    if (course === null) {
+      throw new NotFoundException("Can't get course with given id");
+    }
     if (!course.groups.find(g => g.id === user.id) && course.teacher_id !== user.id) { 
       throw new NotFoundException();
     }
@@ -73,6 +82,9 @@ export class CoursesService {
         groups: true,
       },
     })
+    if (course === null) {
+      throw new NotFoundException("Can't get course with given id");
+    }
     if (!course.groups.find(g => g.id === user.id) && course.teacher_id !== user.id) { 
       throw new NotFoundException();
     }
