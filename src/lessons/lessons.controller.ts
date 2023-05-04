@@ -47,8 +47,8 @@ export class LessonsController {
     , fileFilter(req, file, callback) {
         if (file.fieldname === 'presentation') {
           const ext = extname(file.originalname);
-          if (!['.pptx', '.pdf', 'ppt'].includes(ext)) {
-            return callback(new UnprocessableEntityException('presentation file must be pptx of pdf'), false)
+          if (!['.pptx', '.pdf', '.ppt'].includes(ext)) {
+            return callback(new UnprocessableEntityException('presentation file must be pptx ppt of pdf'), false)
           }
         }
         if (file.fieldname === 'lecture') {
