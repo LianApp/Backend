@@ -21,6 +21,9 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
+  async getUser(id: number) {
+    return await this.prisma.user.findUnique({where: {id: id}, include: { group: true }})
+  }
 
   async login(email: string, password: string): Promise<Token> {
     const user = await this.prisma.user.findUnique({ where: { email } });

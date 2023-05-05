@@ -26,8 +26,9 @@ export class AuthController {
     @ApiBearerAuth()
     @ApiOkResponse({type: OmitType(UserModel, ['password'])})
     async getme(@UserEntity() user: User) {
-        const {password, ...rest} = user;
-        return rest;
+      const userEntity = await this.auth.getUser(user.id);
+      const {password, ...rest} = userEntity;
+      return rest;
     }
 
     @Post('/api/refresh')
