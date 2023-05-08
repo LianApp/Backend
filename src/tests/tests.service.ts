@@ -2,11 +2,28 @@ import { ForbiddenException, Injectable, NotFoundException, Param, UnauthorizedE
 import { Question, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { AddAnswerDto } from './dto/add-answer.dto';
+import { CreateTestDto } from './dto/create-test.dto';
 
 @Injectable()
 export class TestsService {
 
   constructor(private readonly prisma: PrismaService) {}
+
+  // async createTest(user: User, lessonId: number, createTestDto: CreateTestDto) {
+  //   return await this.prisma.test.create({
+  //     data: {
+  //       lesson_id: lessonId,
+  //       title: createTestDto.title,
+  //       questions: {
+  //         createMany: [
+  //           createTestDto.quesions
+  //         ]
+  //       }
+  //       
+  //     }
+  //   })
+  //   
+  // }
 
   async getResults(user: User, testId: number) {
     const test = await this.prisma.test.findUnique({

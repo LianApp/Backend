@@ -64,6 +64,7 @@ Table Lesson {
 
 Table Test {
   id Int [pk, increment]
+  title String [not null]
   lesson_id Int [unique, not null]
   lesson Lesson [not null]
   questions Question [not null]

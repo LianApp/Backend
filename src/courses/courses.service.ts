@@ -67,7 +67,7 @@ export class CoursesService {
     if (course === null) {
       throw new NotFoundException("Can't get course with given id");
     }
-    if (!course.groups.find(g => g.id === user.id) && course.teacher_id !== user.id) { 
+    if (!course.groups.find(g => g.id === user.group_id) && course.teacher_id !== user.id) { 
       throw new NotFoundException();
     }
     return course.lessons
