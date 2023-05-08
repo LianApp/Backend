@@ -12,52 +12,53 @@ generator dbml {
 }
 
 model Organization {
-  id    Int    @id @default(autoincrement())
-  name  String 
-  type  String
-  users User[]
+  id       Int       @id @default(autoincrement())
+  name     String
+  type     String
+  users    User[]
   subjects Subject[]
-  groups Group[]
+  groups   Group[]
 }
 
 model User {
-  id              Int          @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   name            String
   role            Role
-  email           String       @unique
+  email           String        @unique
   password        String
   organization_id Int
-  organization    Organization @relation(fields: [organization_id], references: [id])
+  organization    Organization  @relation(fields: [organization_id], references: [id])
   group_id        Int?
-  group           Group?       @relation(fields: [group_id], references: [id])
+  group           Group?        @relation(fields: [group_id], references: [id])
   subjects        Subject[]
+  testSessions    TestSession[]
 }
 
 model Group {
-  id       Int      @id @default(autoincrement())
-  name     String
-  courses  Course[]
-  students User[]
-  organization_id Int 
-  organization Organization @relation(fields: [organization_id], references: [id])
+  id              Int          @id @default(autoincrement())
+  name            String
+  courses         Course[]
+  students        User[]
+  organization_id Int
+  organization    Organization @relation(fields: [organization_id], references: [id])
 }
 
 model Course {
   id         Int      @id @default(autoincrement())
-  icon       String   @db.VarChar(1) @default("📕")
+  icon       String   @default("📕") @db.VarChar(1)
   title      String
   groups     Group[]
   subject_id Int
   lessons    Lesson[]
-  teacher_id Int 
+  teacher_id Int
 }
 
 model Subject {
-  id       Int    @id @default(autoincrement())
-  name     String
-  teachers User[]
+  id              Int          @id @default(autoincrement())
+  name            String
+  teachers        User[]
   organization_id Int
-  organization Organization @relation(fields: [organization_id], references: [id])
+  organization    Organization @relation(fields: [organization_id], references: [id])
 }
 
 model Lesson {
@@ -71,36 +72,60 @@ model Lesson {
 }
 
 model Test {
-  id        Int        @id @default(autoincrement())
-  lesson_id Int        @unique
-  lesson    Lesson     @relation(fields: [lesson_id], references: [id])
+  id        Int           @id @default(autoincrement())
+  lesson_id Int           @unique
+  lesson    Lesson        @relation(fields: [lesson_id], references: [id])
   questions Question[]
-  sessions TestSession[]
+  sessions  TestSession[]
 }
 
 model TestSession {
-    id Int @id @default(autoincrement())
-    test_id Int
-    test Test @relation(fields: [test_id], references: [id])
+  id         Int             @id @default(autoincrement())
+  test_id    Int
+  test       Test            @relation(fields: [test_id], references: [id])
+  student_id Int
+  student    User            @relation(fields: [student_id], references: [id])
+  answers    StudentAnswer[]
+  results    SessionResult[]
+}
+
+model SessionResult {
+  id         Int         @id @default(autoincrement())
+  session_id Int
+  session    TestSession @relation(fields: [session_id], references: [id])
+  total      Int
+  correct    Int
+  percentage Int
+}
+
+model StudentAnswer {
+  id          Int         @id @default(autoincrement())
+  session_id  Int
+  session     TestSession @relation(fields: [session_id], references: [id])
+  question_id Int
+  question    Question    @relation(fields: [question_id], references: [id])
+  answer_id   Int
+  answer      Answer      @relation(fields: [answer_id], references: [id])
 }
 
 model Question {
-  id      Int          @id @default(autoincrement())
-  test_id Int
-  test    Test         @relation(fields: [test_id], references: [id])
-  text    String
-  type    QuestionType
-  answers Answer[]
+  id            Int             @id @default(autoincrement())
+  test_id       Int
+  test          Test            @relation(fields: [test_id], references: [id])
+  text          String
+  type          QuestionType
+  answers       Answer[]
+  StudentAnswer StudentAnswer[]
 }
 
 model Answer {
-  id          Int      @id @default(autoincrement())
-  question_id Int
-  question    Question @relation(fields: [question_id], references: [id])
-  text        String
-  correct     Boolean
+  id            Int             @id @default(autoincrement())
+  question_id   Int
+  question      Question        @relation(fields: [question_id], references: [id])
+  text          String
+  correct       Boolean
+  StudentAnswer StudentAnswer[]
 }
-
 
 enum Role {
   ADMIN

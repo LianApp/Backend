@@ -22,6 +22,7 @@ Table User {
   group_id Int
   group Group
   subjects Subject [not null]
+  testSessions TestSession [not null]
 }
 
 Table Group {
@@ -73,6 +74,29 @@ Table TestSession {
   id Int [pk, increment]
   test_id Int [not null]
   test Test [not null]
+  student_id Int [not null]
+  student User [not null]
+  answers StudentAnswer [not null]
+  results SessionResult [not null]
+}
+
+Table SessionResult {
+  id Int [pk, increment]
+  session_id Int [not null]
+  session TestSession [not null]
+  total Int [not null]
+  correct Int [not null]
+  percentage Int [not null]
+}
+
+Table StudentAnswer {
+  id Int [pk, increment]
+  session_id Int [not null]
+  session TestSession [not null]
+  question_id Int [not null]
+  question Question [not null]
+  answer_id Int [not null]
+  answer Answer [not null]
 }
 
 Table Question {
@@ -82,6 +106,7 @@ Table Question {
   text String [not null]
   type QuestionType [not null]
   answers Answer [not null]
+  StudentAnswer StudentAnswer [not null]
 }
 
 Table Answer {
@@ -90,6 +115,7 @@ Table Answer {
   question Question [not null]
   text String [not null]
   correct Boolean [not null]
+  StudentAnswer StudentAnswer [not null]
 }
 
 Enum Role {
@@ -117,6 +143,16 @@ Ref: Lesson.course_id > Course.id
 Ref: Test.lesson_id - Lesson.id
 
 Ref: TestSession.test_id > Test.id
+
+Ref: TestSession.student_id > User.id
+
+Ref: SessionResult.session_id > TestSession.id
+
+Ref: StudentAnswer.session_id > TestSession.id
+
+Ref: StudentAnswer.question_id > Question.id
+
+Ref: StudentAnswer.answer_id > Answer.id
 
 Ref: Question.test_id > Test.id
 
