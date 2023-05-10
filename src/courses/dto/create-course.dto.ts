@@ -12,6 +12,7 @@ export class CreateCourseDto {
   subjectId: number;
   
   @ApiProperty({type: 'number', isArray: true})
+  @IsNotEmpty()
   groupIds: number[]
 
   @ApiProperty()

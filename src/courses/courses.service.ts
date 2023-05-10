@@ -14,8 +14,12 @@ export class CoursesService {
         title: createCourseDto.title,
         subject_id: createCourseDto.subjectId,
         teacher_id: user.id,
-        icon: createCourseDto.icon
-      }
+        icon: createCourseDto.icon,
+        groups: {
+          connect: [...createCourseDto.groupIds.map(id => ({id: id}))]
+        }
+      },
+      include: {groups: true}
     })
   }
 
