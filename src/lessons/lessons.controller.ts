@@ -11,6 +11,7 @@ import { extname, join } from 'path';
 import { diskStorage } from 'multer';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/role.guard';
+import { cloudStorage } from 'src/common/utils/storage';
 
 @Controller()
 @ApiTags('lessons')
@@ -84,8 +85,25 @@ export class LessonsController {
     const l = lecture[0];
     const p = presentation[0];
 
-    const lecturePath = "/storage/" + l.filename;
-    const presentationPath = "/storage/" + p.filename;
+
+    const FILES_PATH = join(process.cwd(), './files');
+    
+    await cloudStorage.Upload({
+      path: join(FILES_PATH, l.filename),
+      name: l.filename,
+    }, "/")
+
+    await cloudStorage.Upload({
+      path: join(FILES_PATH, l.filename),
+      name: p.filename,
+    }, "/")
+    
+
+    const prefix = "https://storage.yandexcloud.net/share-buckett/"
+
+
+    const lecturePath = prefix + l.filename;
+    const presentationPath = prefix + p.filename;
 
     return await this.lessonsService.create(courseId, createLessonDto.title, presentationPath, lecturePath)
     
