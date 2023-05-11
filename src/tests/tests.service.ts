@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable, NotFoundException, Param, UnauthorizedE
 import { Question, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { AddAnswerDto } from './dto/add-answer.dto';
+import { AddQuestionDto } from './dto/add-question.dto';
 import { CreateTestDto } from './dto/create-test.dto';
 
 @Injectable()
@@ -9,21 +10,32 @@ export class TestsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  // async createTest(user: User, lessonId: number, createTestDto: CreateTestDto) {
-  //   return await this.prisma.test.create({
-  //     data: {
-  //       lesson_id: lessonId,
-  //       title: createTestDto.title,
-  //       questions: {
-  //         createMany: [
-  //           createTestDto.quesions
-  //         ]
-  //       }
-  //       
-  //     }
-  //   })
-  //   
-  // }
+  async createTest(user: User, lessonId: number, createTestDto: CreateTestDto) {
+    const lesson = await this.prisma.lesson.findUnique({where: {id: lessonId}, include: {course: true}});
+    if (user.id !== lesson.course.teacher_id) {
+      throw new ForbiddenException("You have not access to create test for this lesson")
+    }
+    return await this.prisma.test.create({
+      data: {
+        lesson_id: lessonId,
+        title: createTestDto.title,
+      }
+    })
+  }
+
+  async addQuestion(user: User, testId: number, addQuestionDto: AddQuestionDto) {
+    return await this.prisma.question.create({
+      data: {
+        test_id: testId,
+        text: addQuestionDto.text,
+        type: addQuestionDto.type,
+        answers: {
+          createMany: {data: addQuestionDto.answers}
+        }
+      }
+    })
+    
+  }
 
   async getResults(user: User, testId: number) {
     const test = await this.prisma.test.findUnique({

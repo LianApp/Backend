@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { User } from '@prisma/client';
@@ -19,19 +19,22 @@ export class SubjectsController {
   @Get()
   @Roles('ORGANIZATOR')
   @ApiOkResponse({ type: Subject, isArray: true })
+  @ApiOperation({ description: "Get all organization subjects\nRoles: ORGANIZATOR" })
   async getAll(@UserEntity() user: User) {
     return await this.subjectsService.findAll(user.organization_id);
   }
 
   @Post()
   @Roles('ORGANIZATOR')
+  @ApiOperation({ description: "Create organization\nRoles: ORGANIZATOR" })
   @UseGuards(RolesGuard)
-  async create(@UserEntity() user: User, createSubjectDto: CreateSubjectDto): Promise<Subject> {
+  async create(@UserEntity() user: User, @Body() createSubjectDto: CreateSubjectDto): Promise<Subject> {
     return await this.subjectsService.create(user.organization_id, createSubjectDto)
   }
 
   @Delete(':id')
   @Roles('ORGANIZATOR')
+  @ApiOperation({ description: "Delete organization\nRoles: ORGANIZATOR" })
   @UseGuards(RolesGuard)
   async delete(@UserEntity() user: User, @Param('id', new ParseIntPipe()) subjectId: number): Promise<Subject> {
     return await this.subjectsService.remove(user, subjectId);

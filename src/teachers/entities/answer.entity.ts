@@ -1,8 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 
-export class CreateTestDto {
+export class AnswerEntity {
   @ApiProperty()
   @IsNotEmpty()
-  title: string;
+  text: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  correct: boolean;
 }

@@ -5,7 +5,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { User } from '@prisma/client';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CourseModel } from 'src/users/models/course.model';
 
 @Controller('/api/teacher')
@@ -18,6 +18,7 @@ export class TeachersController {
   @Get('/courses')
   @Roles('TEACHER')
   @UseGuards(RolesGuard)
+  @ApiOperation({ description: "Get all teacher courses\nRoles: TEACHER" })
   @ApiOkResponse({type: [CourseModel]})
   async getCourses(@UserEntity() user: User) {
     return await this.teachersService.getCourses(user);

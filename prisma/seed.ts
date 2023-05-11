@@ -21,6 +21,16 @@ async function main() {
     }
   });
 
+  const org = await prisma.user.create({
+    data: {
+      role: "ORGANIZATOR",
+      name: "Org",
+      email: "org@org.fa.ru",
+      password: "$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm",
+      organization_id: user2.organization_id
+    }
+  })
+
   const subject = await prisma.subject.create({
     data: {
       name: "Математика",

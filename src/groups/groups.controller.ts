@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put, ParseIntPipe } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/role.guard';
@@ -21,6 +21,7 @@ export class GroupsController {
   @Get()
   @Roles('TEACHER', 'ORGANIZATOR')
   @UseGuards(RolesGuard)
+  @ApiOperation({ description: "Get all organization groups\nRoles: TEACHER, ORGANIZATOR" })
   @ApiOkResponse({ type: Group, isArray: true })
   async getAll(@UserEntity() user: User) {
     return await this.groupsService.findAll(user.organization_id);
@@ -28,6 +29,7 @@ export class GroupsController {
 
   @Get(':id/students')
   @Roles('TEACHER', 'ORGANIZATOR')
+  @ApiOperation({ description: "Get all group students\nRoles: TEACHER, ORGANIZATOR" })
   @UseGuards(RolesGuard)
   @ApiOkResponse({ type: UserModel, isArray: true })
   async getStudents(@Param('id', new ParseIntPipe()) groupId: number) {
@@ -36,6 +38,7 @@ export class GroupsController {
   
   @Put(':id')
   @Roles('ORGANIZATOR')
+  @ApiOperation({ description: "Update group\nRoles: ORGANIZATOR" })
   @UseGuards(RolesGuard)
   async updateGroup(
     @UserEntity() user: User,
@@ -47,8 +50,9 @@ export class GroupsController {
 
   @Post()
   @Roles('ORGANIZATOR')
+  @ApiOperation({ description: "Create group\nRoles: ORGANIZATOR" })
   @UseGuards(RolesGuard)
-  async createGroup(@UserEntity() user: User, createGroupDto: CreateGroupDto) {
+  async createGroup(@UserEntity() user: User, @Body() createGroupDto: CreateGroupDto) {
     return await this.groupsService.create(user.organization_id, createGroupDto);
   }
  

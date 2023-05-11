@@ -2,7 +2,7 @@ import { PrismaService } from 'nestjs-prisma';
 import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PasswordService } from 'src/auth/password.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { AddStudentDto } from './dto/add-students.dto'
+import { AddStudentDto, AddTeacherDto, AddTeachersDto } from './dto/add-students.dto'
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { CreateUserDto } from './dto/create-student.dto';
@@ -18,7 +18,7 @@ export class UsersService {
   ) { }
 
 
-  async addStudents(user: User, studentList: AddStudentDto[], role: Role = 'STUDENT') {
+  async addStudents(user: User, studentList: AddStudentDto[] | AddTeacherDto[], role: Role = 'STUDENT') {
     
     const students: CreateUserDto[] = studentList.map(
       student => ({
@@ -44,10 +44,8 @@ export class UsersService {
 
     await this.prisma.user.createMany(createUsersArgs)
 
-    await Promise.all(
-      students.map(
-        async s => this.queue.add('email', s)
-      )
+    students.map(
+      async s => this.queue.add('email', s)
     )
 
     return {"message": "Ok"}

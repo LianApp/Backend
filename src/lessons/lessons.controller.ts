@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, UseGuards, ParseIntPipe, UseInterceptors, UploadedFiles, BadRequestException, HttpStatus, UnprocessableEntityException } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
@@ -22,6 +22,7 @@ export class LessonsController {
 
   @Get("/api/lessons/:id")
   @ApiOkResponse({type: LessonModel})
+  @ApiOperation({ description: "Get lesson by id" })
   async getLesson(@Param('id', new ParseIntPipe()) lessonId: number) {
     return await this.lessonsService.getLesson(lessonId);
   }
@@ -29,6 +30,7 @@ export class LessonsController {
   @Post('/api/course/:id/lessons')
   @ApiConsumes('multipart/form-data')
   @ApiTags('courses')
+  @ApiOperation({ description: "Create lesson\nRoles: TEACHER" })
   @ApiBody({
     type: CreateLessonDto
   })

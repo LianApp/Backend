@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags, OmitType } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation, ApiSecurity, ApiTags, OmitType } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { JwtAuthGuard } from './auth.guard';
@@ -16,6 +16,7 @@ export class AuthController {
 
     @Post("api/login")
     @ApiBody({type: LoginDto})
+    @ApiOperation({description: "Log in via email and password"})
     async login(@Body() { email, password }: LoginDto): Promise<Token> {
         const token = await this.auth.login(email, password);
         return token
@@ -24,6 +25,7 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get("api/me")
     @ApiBearerAuth()
+    @ApiOperation({description: "Get user entity"})
     @ApiOkResponse({type: OmitType(UserModel, ['password'])})
     async getme(@UserEntity() user: User) {
       const userEntity = await this.auth.getUser(user.id);
@@ -32,6 +34,7 @@ export class AuthController {
     }
 
     @Post('/api/refresh')
+    @ApiOperation({description: "Refresh auth token"})
     @ApiOkResponse({type: Token})
     async refresh(@Body() refreshToken: RefreshTokenDto) {
       return this.auth.refreshToken(refreshToken.refreshToken)

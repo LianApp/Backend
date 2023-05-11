@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsEmail } from 'class-validator'
+import { ApiProperty, OmitType } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
+import { IsNotEmpty, IsEmail, ValidateNested, IsArray } from 'class-validator'
 
 export class AddStudentDto {
   @IsNotEmpty()
@@ -22,7 +23,22 @@ export class AddStudentDto {
   groupId: number
 }
 
+export class AddTeacherDto extends OmitType(AddStudentDto, ['groupId']) {
+  
+}
+
+export class AddTeachersDto {
+  @ApiProperty({type: AddTeacherDto, isArray: true})
+  @IsArray()
+  @ValidateNested({ each: true, always: true })
+  @Type(() => AddTeacherDto)
+  data: AddTeacherDto[]
+}
+
 export class AddStudentsDto {
-  @ApiProperty()
+  @ApiProperty({type: AddStudentDto, isArray: true})
+  @IsArray()
+  @ValidateNested({ each: true, always: true })
+  @Type(() => AddStudentDto)
   data: AddStudentDto[]
 }
