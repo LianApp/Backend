@@ -96,7 +96,7 @@ export class LessonsController {
     }, "/")
 
     await cloudStorage.Upload({
-      path: join(FILES_PATH, l.filename),
+      path: join(FILES_PATH, p.filename),
       name: p.filename,
     }, "/")
     

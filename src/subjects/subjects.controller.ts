@@ -27,6 +27,7 @@ export class SubjectsController {
   @Post()
   @Roles('ORGANIZATOR')
   @ApiOperation({ description: "Create organization\nRoles: ORGANIZATOR" })
+  @ApiOkResponse({ type: Subject })
   @UseGuards(RolesGuard)
   async create(@UserEntity() user: User, @Body() createSubjectDto: CreateSubjectDto): Promise<Subject> {
     return await this.subjectsService.create(user.organization_id, createSubjectDto)
@@ -34,6 +35,7 @@ export class SubjectsController {
 
   @Delete(':id')
   @Roles('ORGANIZATOR')
+  @ApiOkResponse({ type: Subject })
   @ApiOperation({ description: "Delete organization\nRoles: ORGANIZATOR" })
   @UseGuards(RolesGuard)
   async delete(@UserEntity() user: User, @Param('id', new ParseIntPipe()) subjectId: number): Promise<Subject> {
