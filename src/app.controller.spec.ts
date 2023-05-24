@@ -6,15 +6,20 @@ import { AppService } from './app.service';
 const chance = new Chance();
 
 describe('AppController', () => {
-  let appController: AppController;
+    let appController: AppController;
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
-    }).compile();
+    beforeEach(async () => {
+        const app: TestingModule = await Test.createTestingModule({
+            controllers: [AppController],
+            providers: [AppService],
+        }).compile();
 
-    appController = app.get<AppController>(AppController);
-  });
+        appController = app.get<AppController>(AppController);
+
+    });
+
+    it('App Controller should be defined', () => {
+        expect(appController).toBeDefined()
+    })
 
 });

@@ -11,97 +11,99 @@ import { Prisma, Role, User } from '@prisma/client';
 @Injectable()
 export class UsersService {
 
-  constructor(
-    private prisma: PrismaService,
-    private passwordService: PasswordService,
-    @InjectQueue('email-queue') private queue: Queue
-  ) { }
+    constructor(
+        private prisma: PrismaService,
+        private passwordService: PasswordService,
+        @InjectQueue('email-queue') private queue: Queue
+    ) {}
 
 
-  async addStudents(user: User, studentList: AddStudentDto[] | AddTeacherDto[], role: Role = 'STUDENT') {
-    
-    const students: CreateUserDto[] = studentList.map(
-      student => ({
-        ...student,
-        password: this.passwordService.generatePassword(),
-        organizationId: user.organization_id,
-      })
-    );
+    async addStudents(user: User,
+                      studentList: AddStudentDto[] | AddTeacherDto[],
+                      role: Role = 'STUDENT'
+                     ) {
 
-    const createStudents: Prisma.UserCreateManyArgs['data'] = await Promise.all(students.map(async s => ({
-        email: s.email,
-        name: s.name,
-        password: await this.passwordService.hashPassword(s.password),
-        role: role,
-        organization_id: user.organization_id,
-        group_id: user.group_id
-    })));
-    
-    const createUsersArgs: Prisma.UserCreateManyArgs = {
-      data: createStudents
-    }
-      
+        const students: CreateUserDto[] = studentList.map(
+            student => ({
+                ...student,
+                password: this.passwordService.generatePassword(),
+                organizationId: user.organization_id,
+            })
+        );
 
-    await this.prisma.user.createMany(createUsersArgs)
+        const createStudents: Prisma.UserCreateManyArgs['data'] = await Promise.all(students.map(async s => ({
+            email: s.email,
+            name: s.name,
+            password: await this.passwordService.hashPassword(s.password),
+            role: role,
+            organization_id: user.organization_id,
+            group_id: user.group_id
+        })));
 
-    students.map(
-      async s => this.queue.add('email', s)
-    )
+        const createUsersArgs: Prisma.UserCreateManyArgs = {
+            data: createStudents
+        }
 
-    return {"message": "Ok"}
-    
-  }
+        await this.prisma.user.createMany(createUsersArgs)
 
-  async changePassword(
-    userId: number,
-    userPassword: string,
-    changePassword: ChangePasswordDto
-  ) {
-    const passwordValid = await this.passwordService.validatePassword(
-      changePassword.oldPassword,
-      userPassword
-    );
+        students.map(
+            async s => this.queue.add('email', s)
+        )
 
-    if (!passwordValid) {
-      throw new BadRequestException('Invalid password');
+        return { "message": "Ok" }
     }
 
-    const hashedPassword = await this.passwordService.hashPassword(
-      changePassword.newPassword
-    );
+    async changePassword(
+        userId: number,
+        userPassword: string,
+        changePassword: ChangePasswordDto
+    ) {
+        const passwordValid = await this.passwordService.validatePassword(
+            changePassword.oldPassword,
+            userPassword
+        );
 
-    return this.prisma.user.update({
-      data: {
-        password: hashedPassword,
-      },
-      where: { id: userId },
-    });
-  }
+        if (!passwordValid) {
+            throw new BadRequestException('Invalid password');
+        }
 
-  async removeStudent(admin: User, studentId: number) {
-    const user = await this.prisma.user.findFirst({where: {
-      organization_id: admin.organization_id,
-      id: studentId
-    }})
+        const hashedPassword = await this.passwordService.hashPassword(
+            changePassword.newPassword
+        );
 
-    if (!user) {
-      throw new ForbiddenException()
+        return this.prisma.user.update({
+            data: {
+                password: hashedPassword,
+            },
+            where: { id: userId },
+        });
     }
 
-    return await this.prisma.user.delete({ 
-      where: { 
-        id: user.id
-      }
-    });
-    
-  }
+    async removeStudent(admin: User, studentId: number) {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                organization_id: admin.organization_id,
+                id: studentId
+            }
+        })
 
-  async getCourses(user: User) {
-    const group_id = user.group_id;
-    return await this.prisma.group.findUnique({
-      where: {
-        id: group_id
-      },
-    }).courses({include: {lessons: true}})
-  }
+        if (!user) {
+            throw new ForbiddenException()
+        }
+
+        return await this.prisma.user.delete({
+            where: {
+                id: user.id
+            }
+        });
+    }
+
+    async getCourses(user: User) {
+        const group_id = user.group_id!;
+        return await this.prisma.group.findUnique({
+            where: {
+                id: group_id
+            },
+        }).courses({ include: { lessons: true } })
+    }
 }

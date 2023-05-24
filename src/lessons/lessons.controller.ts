@@ -12,6 +12,8 @@ import { diskStorage } from 'multer';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { cloudStorage } from 'src/common/utils/storage';
+import { CreateTestDto } from 'src/tests/dto/create-test.dto';
+import { LessonDto } from 'src/generated/nestjs-dto/lesson.dto';
 
 @Controller()
 @ApiTags('lessons')
@@ -21,7 +23,7 @@ export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
   @Get("/api/lessons/:id")
-  @ApiOkResponse({type: LessonModel})
+  @ApiOkResponse({type: LessonDto})
   @ApiOperation({ description: "Get lesson by id" })
   async getLesson(@Param('id', new ParseIntPipe()) lessonId: number) {
     return await this.lessonsService.getLesson(lessonId);
@@ -109,6 +111,19 @@ export class LessonsController {
 
     return await this.lessonsService.create(courseId, createLessonDto.title, presentationPath, lecturePath)
     
+  }
+
+
+  @Roles('TEACHER')
+  @UseGuards(RolesGuard)
+  @ApiOperation({ description: "Create test by title\nRoles: TEACHER"})
+  @Post('/api/lessons/:id/test')
+  async createTest(
+    @UserEntity() user: User,
+    @Param('id', ParseIntPipe) lessonId: number,
+    @Body() createTestDto: CreateTestDto,
+  ) {
+    return await this.lessonsService.createTest(user, lessonId, createTestDto)
   }
 
 }

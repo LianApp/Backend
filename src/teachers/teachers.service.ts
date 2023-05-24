@@ -6,7 +6,7 @@ import { PrismaService } from 'nestjs-prisma';
 export class TeachersService {
 
   constructor(private prisma: PrismaService) { }
-  
+
   async getCourses(user: User): Promise<Course[]> {
     const courses = await this.prisma.course.findMany({
       where: {teacher_id: user.id},
@@ -16,9 +16,8 @@ export class TeachersService {
   }
 
   async getSubjects(user: User): Promise<Subject[]> {
-    const subjects = await this.prisma.user.findUnique({ where: { id: user.id } }).subjects()
+    const subjects = await this.prisma.user.findUnique({ where: { id: user.id } }).subjects() || []
     return subjects
-    
   }
-  
+
 }

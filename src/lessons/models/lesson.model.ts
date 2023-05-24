@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Test } from "src/generated/nestjs-dto/test.entity";
 
 export class LessonModel {
   @ApiProperty()
@@ -15,4 +16,7 @@ export class LessonModel {
   
   @ApiProperty()
   lecture_url: string;
+
+  @ApiProperty()
+  test: Test
 }

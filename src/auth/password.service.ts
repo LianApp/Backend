@@ -8,7 +8,7 @@ import { generate } from 'generate-password';
 export class PasswordService {
   get bcryptSaltRounds(): string | number {
     const securityConfig = this.configService.get<SecurityConfig>('security');
-    const saltOrRounds = securityConfig.bcryptSaltOrRound;
+    const saltOrRounds = securityConfig?.bcryptSaltOrRound ?? 10;
 
     return Number.isInteger(Number(saltOrRounds))
       ? Number(saltOrRounds)

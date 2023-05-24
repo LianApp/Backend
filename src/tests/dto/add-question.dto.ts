@@ -11,8 +11,6 @@ export class AddQuestionDto {
 
   @ApiProperty({ type: AnswerEntity, isArray: true })
   @IsArray()
-  @MinLength(1)
-  @MaxLength(8)
   @ValidateNested({ each: true })
   @Type(() => AnswerEntity)
   answers: AnswerEntity[]
