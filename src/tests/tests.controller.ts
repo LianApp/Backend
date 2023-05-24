@@ -13,6 +13,10 @@ import { SessionResultDto } from 'src/generated/nestjs-dto/sessionResult.dto';
 import { Test } from './entities/test.entity';
 import { Question } from 'src/generated/nestjs-dto/question.entity';
 import { GetQuestionDto } from './dto/get-question.dto';
+import { TestSessionDto } from 'src/generated/nestjs-dto/testSession.dto';
+import { TestSession } from 'src/generated/nestjs-dto/testSession.entity';
+import { AnswerDto } from 'src/generated/nestjs-dto/answer.dto';
+import { StudentAnswerDto } from 'src/generated/nestjs-dto/studentAnswer.dto';
 
 @Controller('/api/tests')
 @ApiTags('tests')
@@ -32,6 +36,7 @@ export class TestsController {
 
   @Post('/:id/start-session')
   @ApiOperation({ description: "Start test session" })
+  @ApiOkResponse({ type: TestSessionDto })
   async startSession(
     @UserEntity() user: User,
     @Param('id', ParseIntPipe) testId: number
@@ -42,6 +47,7 @@ export class TestsController {
   @Roles('STUDENT')
   @UseGuards(RolesGuard)
   @ApiOperation({ description: "Add answer within the session\nRoles: STUDENT" })
+  @ApiOkResponse({ type: StudentAnswerDto })
   @Post('/session/:id')
   async addAnswer(
     @UserEntity() user: User,
@@ -54,6 +60,7 @@ export class TestsController {
   @Roles('STUDENT')
   @UseGuards(RolesGuard)
   @ApiOperation({ description: "Save session and get results\nRoles: STUDENT" })
+  @ApiOkResponse({ type: SessionResultDto })
   @Post('/session/:id/finish')
   async saveSession(
     @UserEntity() user: User,
@@ -78,11 +85,13 @@ export class TestsController {
   @UseGuards(RolesGuard)
   @ApiOperation({ description: "Get all test sessions with results\nRoles: STUDENT" })
   @Get('/:id/sessions')
+  @ApiOkResponse({ type: TestSession, isArray: true })
   async getStudentSessions(@UserEntity() user: User, @Param('id', ParseIntPipe) testId: number) {
     return await this.testsService.getStudentSessions(testId, user)
   }
 
   @Get('/:id')
+  @ApiOperation({ description: "Get test with answers and qustions" })
   @ApiOkResponse({ type: Test })
   async getOne(@UserEntity() user: User, @Param('id', ParseIntPipe) testId: number) {
     return await this.testsService.getOne(testId)

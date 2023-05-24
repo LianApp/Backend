@@ -14,7 +14,6 @@ id: number ;
   format: `int32`,
 })
 session_id: number ;
-session?: TestSession ;
 @ApiProperty({
   type: `integer`,
   format: `int32`,

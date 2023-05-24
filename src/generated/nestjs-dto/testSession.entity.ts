@@ -17,13 +17,6 @@ id: number ;
   format: `int32`,
 })
 test_id: number ;
-test?: Test ;
-@ApiProperty({
-  type: `integer`,
-  format: `int32`,
-})
 student_id: number ;
-student?: User ;
-answers?: StudentAnswer[] ;
 results?: SessionResult[] ;
 }
